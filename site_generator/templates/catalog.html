@@ -24,7 +24,7 @@
         <tbody>
             {% for product in table_products %}
             <tr class="product" data-id="{{ product.id }}">
-                <td class="name">{{ product.name }}</td>
+                <td class="name"><a class="product-link" href="product/{{ product.id }}.html">{{ product.name }}</a></td>
                 <td class="price">{{ "%.2f"|format(product.price) }} zł</td>
                 <td class="category">{{ product.category }}</td>
                 <td class="manufacturer">{{ product.manufacturer }}</td>
@@ -40,7 +40,7 @@
 
     {% for product in card_products %}
     <article class="product" data-id="{{ product.id }}">
-        <h2 class="name">{{ product.name }}</h2>
+        <h2 class="name"><a class="product-link" href="product/{{ product.id }}.html">{{ product.name }}</a></h2>
         <span class="price">{{ "%.2f"|format(product.price) }} zł</span>
         <p class="category">{{ product.category }}</p>
         <p class="manufacturer">{{ product.manufacturer }}</p>

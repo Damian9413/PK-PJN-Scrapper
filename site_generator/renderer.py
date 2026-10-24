@@ -24,3 +24,7 @@ class HtmlRenderer:
             table_products=table_products,
             card_products=card_products,
         )
+
+    def render_product(self, product: Product) -> str:
+        template = self._env.get_template("product.html")
+        return template.render(product=product)

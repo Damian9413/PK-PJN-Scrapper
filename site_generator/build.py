@@ -14,11 +14,20 @@ def main() -> None:
     table_products = products[:30]   # first 30 products
     card_products = products[30:]    # the remaining ones
 
-    html = HtmlRenderer().render_catalog(table_products, card_products)
+    renderer = HtmlRenderer()
+    html = renderer.render_catalog(table_products, card_products)
 
     OUTPUT_DIR.mkdir(exist_ok=True)
     (OUTPUT_DIR / "index.html").write_text(html, encoding="utf-8")
     print(f"Saved {len(products)} products to {OUTPUT_DIR / 'index.html'}")
+
+    product_dir = OUTPUT_DIR / "product"
+    product_dir.mkdir(exist_ok=True)
+
+    for product in products:
+        page = renderer.render_product(product)
+        (product_dir / f"{product.id}.html").write_text(page, encoding="utf-8")
+    print(f"Saved {len(products)} detail pages to {product_dir}")
 
 
 if __name__ == "__main__":

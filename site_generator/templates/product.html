@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <a class="back-link" href="../index.html">← Wróć do katalogu</a>
+
+    <article class="product-details" data-id="{{ product.id }}">
+        <h1 class="name">{{ product.name }}</h1>
+        <p class="price">{{ "%.2f"|format(product.price) }} zł</p>
+
+        <ul class="details">
+            <li class="description">{{ product.description }}</li>
+            <li class="weight">{{ product.weight_kg }} kg</li>
+            <li class="color">{{ product.color }}</li>
+            <li class="ean">{{ product.ean }}</li>
+            <li class="country">{{ product.country_of_origin }}</li>
+            <li class="shipping-cost">{{ "%.2f"|format(product.shipping_cost) }} zł</li>
+            <li class="delivery-days">{{ product.delivery_days }} dni</li>
+            <li class="seller">{{ product.seller }}</li>
+        </ul>
+    </article>
+</body>
+</html>
