@@ -1,0 +1,21 @@
+# środowisko wirtualne – każdy tworzy własne z requirements.txt
+.venv/
+
+# pliki generowane przez Pythona
+__pycache__/
+*.pyc
+
+# ustawienia edytora (osobiste, nie projektowe)
+.vscode/
+
+# wyniki działania programu – da się je odtworzyć skryptem
+output/
+
+# pliki systemowe macOS
+.DS_Store
+
+# narzędzia AI (osobiste ustawienia asystentów)
+.claude/
+CLAUDE.md
+.cursor/
+.cursorrules
