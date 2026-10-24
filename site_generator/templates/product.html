@@ -17,7 +17,7 @@
             <li class="color">{{ product.color }}</li>
             <li class="ean">{{ product.ean }}</li>
             <li class="country">{{ product.country_of_origin }}</li>
-            <li class="shipping-cost">{{ "%.2f"|format(product.shipping_cost) ~ " zł" if product.shipping_cost is not none else "" }}</li>
+            <li class="shipping-cost">{{ product.shipping_cost|price if product.shipping_cost is not none else "" }}</li>
             <li class="delivery-days">{{ product.delivery_days }} dni</li>
             <li class="seller">{{ product.seller }}</li>
         </ul>

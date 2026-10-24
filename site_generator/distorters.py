@@ -7,6 +7,7 @@ from dataclasses import replace
 
 from site_generator.models import Product
 
+EUR_RATE = 4.30  # fixed, fictional exchange rate
 
 class Distorter(ABC):
     """Contract: takes products, returns (possibly damaged) products."""
@@ -45,4 +46,22 @@ class DuplicateDistorter(Distorter):
     def apply(self, products: list[Product]) -> list[Product]:
         candidates = products[: self._source_limit]               # step 1
         duplicates = self._random.sample(candidates, self._count) # step 2
-        return products + duplicates                              # steps 3–4
+        return products + duplicates
+
+        # steps 3–4
+class CurrencyDistorter(Distorter):
+    """Converts a fraction of prices to EUR."""
+
+    def __init__(self, fraction: float, seed: int = 42) -> None:
+        self._fraction = fraction
+        self._random = random.Random(seed)
+
+    def apply(self, products: list[Product]) -> list[Product]:
+        count = math.ceil(len(products) * self._fraction)
+        ids_to_convert = set(self._random.sample([p.id for p in products], count))
+        return [
+            replace(p, price=round(p.price / EUR_RATE, 2), currency="EUR")
+            if p.id in ids_to_convert
+            else p
+            for p in products
+        ]

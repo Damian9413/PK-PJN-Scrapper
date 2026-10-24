@@ -26,7 +26,7 @@
             {% for product in page.table_products %}
             <tr class="product" data-id="{{ product.id }}">
                 <td class="name"><a class="product-link" href="product/{{ product.id }}.html">{{ product.name }}</a></td>
-                <td class="price">{{ "%.2f"|format(product.price) }} zł</td>
+                <td class="price">{{ product.price|price(product.currency) }}</td>
                 <td class="category">{{ product.category }}</td>
                 <td class="manufacturer">{{ product.manufacturer }}</td>
                 <td class="available">{{ "Tak" if product.available else "Nie" }}</td>
@@ -42,7 +42,7 @@
     {% for product in page.card_products %}
     <article class="product" data-id="{{ product.id }}">
         <h2 class="name"><a class="product-link" href="product/{{ product.id }}.html">{{ product.name }}</a></h2>
-        <span class="price">{{ "%.2f"|format(product.price) }} zł</span>
+        <span class="price">{{ product.price|price(product.currency) }}</span>
         <p class="category">{{ product.category }}</p>
         <p class="manufacturer">{{ product.manufacturer }}</p>
         <p class="available">{{ "Tak" if product.available else "Nie" }}</p>
