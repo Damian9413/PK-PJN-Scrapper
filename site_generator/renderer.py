@@ -4,7 +4,7 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-from site_generator.formatters import format_price
+from site_generator.formatters import format_date, format_price
 from site_generator.models import Product
 from site_generator.paginator import Page
 
@@ -18,6 +18,7 @@ class HtmlRenderer:
     def __init__(self) -> None:
         self._env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
         self._env.filters["price"] = format_price
+        self._env.filters["messy_date"] = format_date
 
     def render_catalog(self, page: Page) -> str:
         template = self._env.get_template("catalog.html")

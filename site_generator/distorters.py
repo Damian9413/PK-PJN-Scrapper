@@ -4,6 +4,7 @@ import math
 import random
 from abc import ABC, abstractmethod
 from dataclasses import replace
+from datetime import date, timedelta
 
 from site_generator.models import Product
 
@@ -63,5 +64,22 @@ class CurrencyDistorter(Distorter):
             replace(p, price=round(p.price / EUR_RATE, 2), currency="EUR")
             if p.id in ids_to_convert
             else p
+            for p in products
+        ]
+
+
+class RecentDateDistorter(Distorter):
+    """Sets 'added yesterday' for a fraction of products (shown as 'wczoraj')."""
+
+    def __init__(self, fraction: float, today: date | None = None, seed: int = 42) -> None:
+        self._fraction = fraction
+        self._yesterday = (today or date.today()) - timedelta(days=1)
+        self._random = random.Random(seed)
+
+    def apply(self, products: list[Product]) -> list[Product]:
+        count = math.ceil(len(products) * self._fraction)
+        ids_to_change = set(self._random.sample([p.id for p in products], count))
+        return [
+            replace(p, added_date=self._yesterday) if p.id in ids_to_change else p
             for p in products
         ]
