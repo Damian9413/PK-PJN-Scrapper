@@ -33,3 +33,16 @@ class MissingValuesDistorter(Distorter):
                 for p in products
             ]
         return products
+
+class DuplicateDistorter(Distorter):
+    """Appends copies of products taken from earlier pages."""
+
+    def __init__(self, count: int, source_limit: int, seed: int = 42) -> None:
+        self._count = count
+        self._random = random.Random(seed)
+        self._source_limit = source_limit
+
+    def apply(self, products: list[Product]) -> list[Product]:
+        candidates = products[: self._source_limit]               # step 1
+        duplicates = self._random.sample(candidates, self._count) # step 2
+        return products + duplicates                              # steps 3–4
