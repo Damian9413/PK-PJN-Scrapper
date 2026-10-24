@@ -2,6 +2,12 @@
 
 from pathlib import Path
 
+from site_generator.distorters import (
+    CurrencyDistorter,
+    DuplicateDistorter,
+    MissingValuesDistorter,
+    RecentDateDistorter,
+)
 from site_generator.factory import ProductFactory
 from site_generator.paginator import Paginator
 from site_generator.renderer import HtmlRenderer
@@ -13,6 +19,16 @@ PAGE_SIZE = 40
 
 def main() -> None:
     products = ProductFactory(seed=42).create_many(PRODUCT_COUNT)
+
+    distorters = [
+        MissingValuesDistorter(fields=["rating", "shipping_cost"], fraction=0.2),
+        CurrencyDistorter(fraction=0.1),
+        RecentDateDistorter(fraction=0.05),
+        DuplicateDistorter(count=8, source_limit=160),   # always last!
+    ]
+    for distorter in distorters:
+        products = distorter.apply(products)
+
     pages = Paginator(page_size=PAGE_SIZE).paginate(products)
     renderer = HtmlRenderer()
 
