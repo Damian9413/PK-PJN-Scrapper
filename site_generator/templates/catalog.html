@@ -2,10 +2,11 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Katalog produktów</title>
+    <title>Katalog produktów – strona {{ page.number }}</title>
 </head>
 <body>
     <h1>Katalog produktów</h1>
+    <p class="page-info">Strona {{ page.number }} z {{ page.total_pages }}</p>
 
     <table>
         <thead>
@@ -22,7 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for product in table_products %}
+            {% for product in page.table_products %}
             <tr class="product" data-id="{{ product.id }}">
                 <td class="name"><a class="product-link" href="product/{{ product.id }}.html">{{ product.name }}</a></td>
                 <td class="price">{{ "%.2f"|format(product.price) }} zł</td>
@@ -38,7 +39,7 @@
         </tbody>
     </table>
 
-    {% for product in card_products %}
+    {% for product in page.card_products %}
     <article class="product" data-id="{{ product.id }}">
         <h2 class="name"><a class="product-link" href="product/{{ product.id }}.html">{{ product.name }}</a></h2>
         <span class="price">{{ "%.2f"|format(product.price) }} zł</span>
@@ -51,5 +52,23 @@
         <p class="warranty">{{ product.warranty_months }} mies.</p>
     </article>
     {% endfor %}
+
+    <nav class="pagination">
+        {% if page.number > 1 %}
+        <a class="prev" href="page-{{ page.number - 1 }}.html">« Poprzednia</a>
+        {% endif %}
+
+        {% for n in range(1, page.total_pages + 1) %}
+            {% if n == page.number %}
+            <span class="current">{{ n }}</span>
+            {% else %}
+            <a class="page-link" href="page-{{ n }}.html">{{ n }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page.number < page.total_pages %}
+        <a class="next" href="page-{{ page.number + 1 }}.html">Następna »</a>
+        {% endif %}
+    </nav>
 </body>
 </html>
