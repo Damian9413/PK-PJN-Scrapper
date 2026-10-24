@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import date
 
+
 @dataclass
 class Product:
     # --- fields shown on the list page (table / cards) ---
@@ -20,7 +21,7 @@ class Product:
     color: str
     ean: str
     country_of_origin: str
-    shipping_cost: float
+    shipping_cost: float | None
     delivery_days: int
     seller: str
 
