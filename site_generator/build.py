@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+from site_generator.distorters import MissingValuesDistorter
 from site_generator.factory import ProductFactory
 from site_generator.paginator import Paginator
 from site_generator.renderer import HtmlRenderer
@@ -13,6 +14,13 @@ PAGE_SIZE = 40
 
 def main() -> None:
     products = ProductFactory(seed=42).create_many(PRODUCT_COUNT)
+
+    distorters = [
+        MissingValuesDistorter(fields=["rating", "shipping_cost"], fraction=0.2),
+    ]
+    for distorter in distorters:
+        products = distorter.apply(products)
+
     pages = Paginator(page_size=PAGE_SIZE).paginate(products)
     renderer = HtmlRenderer()
 

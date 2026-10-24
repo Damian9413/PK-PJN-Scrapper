@@ -11,10 +11,10 @@ class Product:
     category: str
     manufacturer: str
     available: bool
-    rating: float
-    review_count: int
+    rating: float| None
+    review_count: int | None
     added_date: date
-    warranty_months: int
+    warranty_months: int | None
     # --- fields shown only on the product detail page ---
     description: str
     weight_kg: float
