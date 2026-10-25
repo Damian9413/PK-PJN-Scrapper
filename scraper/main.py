@@ -1,5 +1,7 @@
 """Scraper entry point: crawl the catalogue, enrich, clean, export."""
+import requests
 
+from scraper.extractors import CatalogPageExtractor, DetailPageExtractor
 from bs4 import BeautifulSoup
 
 from scraper.extractors import CatalogPageExtractor
@@ -30,6 +32,23 @@ def deduplicate(records: list[dict]) -> list[dict]:
         unique.append(record)
     return unique
 
+def enrich_with_details(fetcher: Fetcher, records: list[dict]) -> list[dict]:
+    """Fetches each detail page and merges its fields into the record."""
+    extractor = DetailPageExtractor()
+    enriched = []
+    for i, record in enumerate(records, start=1):
+        details = {}
+        if record["detail_url"] is not None:
+            try:
+                soup = BeautifulSoup(fetcher.fetch(record["detail_url"]), "lxml")
+                details = extractor.extract(soup)
+            except requests.RequestException as error:
+                print(f"  ! could not fetch {record['detail_url']}: {error}")
+        enriched.append({**record, **details})
+        if i % 50 == 0:
+            print(f"  details: {i}/{len(records)}")
+    return enriched
+
 
 def main() -> None:
     fetcher = Fetcher()
@@ -37,6 +56,9 @@ def main() -> None:
     print(f"Collected {len(records)} records from the catalogue")
     unique = deduplicate(records)
     print(f"Duplicates removed: {len(records) - len(unique)}, unique records: {len(unique)}")
+
+    full = enrich_with_details(fetcher, unique)
+    print(f"Records with details: {len(full)}, fields in first record: {len(full[0])}")
 
 
 if __name__ == "__main__":
