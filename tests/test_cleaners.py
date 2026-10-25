@@ -1,12 +1,14 @@
 """Unit tests for cleaning functions."""
 
+from datetime import date
+
 from scraper.cleaners import (
     parse_bool,
     parse_currency,
+    parse_date,
     parse_float,
     parse_int,
     parse_price,
-    parse_date,
 )
 
 def test_parse_price_pln_with_thousand_separator():
