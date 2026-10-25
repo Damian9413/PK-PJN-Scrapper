@@ -12,7 +12,7 @@ class Fetcher:
             self,
             delay: float = 0.5,
             timeout: float = 10.0,
-            user_agent: str = DEFAULT_USER_AGENT,,
+            user_agent: str = DEFAULT_USER_AGENT
     ) -> None:
         self._delay = delay
         self._timeout = timeout
