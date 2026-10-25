@@ -3,6 +3,7 @@
 from datetime import date
 
 from scraper.cleaners import (
+    clean_record,
     parse_bool,
     parse_currency,
     parse_date,
@@ -79,3 +80,53 @@ def test_parse_date_yesterday():
 
 def test_parse_date_unknown_format():
     assert parse_date("w zeszłym tygodniu") is None
+
+
+# --- clean_record ---
+
+FULL_RAW_RECORD = {
+    "id": "7",
+    "name": "Bosch Głośnik 338",
+    "price": "2\xa0536,66\xa0zł",
+    "category": "Audio",
+    "manufacturer": "Bosch",
+    "available": "Tak",
+    "rating": "4.2",
+    "review_count": "120",
+    "added_date": "wczoraj",
+    "warranty": "24 mies.",
+    "description": "Opis.",
+    "weight": "1.25 kg",
+    "color": "czarny",
+    "ean": "0012345678905",
+    "country_of_origin": "Polska",
+    "shipping_cost": "9,99\xa0zł",
+    "delivery_days": "3 dni",
+    "seller": "Firma s.c.",
+    "detail_url": "http://localhost:8000/product/7.html",
+}
+
+
+def test_clean_record_converts_types():
+    clean = clean_record(FULL_RAW_RECORD, today=date(2026, 10, 25))
+    assert clean["id"] == 7
+    assert clean["price"] == 2536.66
+    assert clean["currency"] == "PLN"
+    assert clean["available"] is True
+    assert clean["added_date"] == date(2026, 10, 24)
+    assert clean["warranty_months"] == 24
+    assert clean["weight_kg"] == 1.25
+    assert clean["shipping_cost"] == 9.99
+
+
+def test_clean_record_keeps_ean_as_string_with_leading_zeros():
+    assert clean_record(FULL_RAW_RECORD)["ean"] == "0012345678905"
+
+
+def test_clean_record_without_detail_fields_gives_none():
+    list_only = {k: v for k, v in FULL_RAW_RECORD.items() if k in ("id", "name", "price")}
+    clean = clean_record(list_only)
+    assert clean["weight_kg"] is None
+    assert clean["shipping_cost"] is None
+    assert clean["seller"] is None
+    assert clean["detail_url"] is None
