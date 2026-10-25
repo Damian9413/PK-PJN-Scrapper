@@ -59,3 +59,28 @@ def parse_date(raw: str | None, today: date | None = None) -> date | None:
         except ValueError:
             pass  # this pattern doesn't fit, try the next one
     return None
+
+def clean_record(raw: dict, today: date | None = None) -> dict:
+    """Turns one raw scraped record into typed values with final column names."""
+    return {
+        "id": parse_int(raw.get("id")),
+        "name": raw.get("name"),
+        "price": parse_price(raw.get("price")),
+        "currency": parse_currency(raw.get("price")),
+        "category": raw.get("category"),
+        "manufacturer": raw.get("manufacturer"),
+        "available": parse_bool(raw.get("available")),
+        "rating": parse_float(raw.get("rating")),
+        "review_count": parse_int(raw.get("review_count")),
+        "added_date": parse_date(raw.get("added_date"), today),
+        "warranty_months": parse_int(raw.get("warranty")),
+        "description": raw.get("description"),
+        "weight_kg": parse_float(raw.get("weight")),
+        "color": raw.get("color"),
+        "ean": raw.get("ean"),
+        "country_of_origin": raw.get("country_of_origin"),
+        "shipping_cost": parse_price(raw.get("shipping_cost")),
+        "delivery_days": parse_int(raw.get("delivery_days")),
+        "seller": raw.get("seller"),
+        "detail_url": raw.get("detail_url"),
+    }

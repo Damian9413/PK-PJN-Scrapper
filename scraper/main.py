@@ -4,8 +4,8 @@ import requests
 from scraper.extractors import CatalogPageExtractor, DetailPageExtractor
 from bs4 import BeautifulSoup
 
-from scraper.extractors import CatalogPageExtractor
 from scraper.fetcher import Fetcher
+from scraper.cleaners import clean_record
 
 START_URL = "http://localhost:8000/page-1.html"
 
@@ -59,6 +59,9 @@ def main() -> None:
 
     full = enrich_with_details(fetcher, unique)
     print(f"Records with details: {len(full)}, fields in first record: {len(full[0])}")
+
+    clean = [clean_record(record) for record in full]
+    print(clean[0])
 
 
 if __name__ == "__main__":
