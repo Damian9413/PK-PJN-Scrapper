@@ -6,6 +6,7 @@ from scraper.cleaners import (
     parse_float,
     parse_int,
     parse_price,
+    parse_date,
 )
 
 def test_parse_price_pln_with_thousand_separator():
@@ -59,3 +60,20 @@ def test_parse_float_with_unit():
 
 def test_parse_float_comma():
     assert parse_float("3,9") == 3.9
+
+# --- parse_date ---
+
+def test_parse_date_iso():
+    assert parse_date("2026-06-14") == date(2026, 6, 14)
+
+
+def test_parse_date_polish():
+    assert parse_date("14.06.2026") == date(2026, 6, 14)
+
+
+def test_parse_date_yesterday():
+    assert parse_date("wczoraj", today=date(2026, 10, 25)) == date(2026, 10, 24)
+
+
+def test_parse_date_unknown_format():
+    assert parse_date("w zeszłym tygodniu") is None

@@ -1,5 +1,9 @@
 """Pure functions that turn raw scraped strings into clean values."""
 
+from datetime import date, datetime, timedelta
+
+DATE_FORMATS = ["%Y-%m-%d", "%d.%m.%Y"]
+
 CURRENCY_SYMBOLS = ["zł", "€", "PLN", "EUR", "pln", "eur"]
 
 def parse_price(raw: str | None) -> float | None:
@@ -41,3 +45,17 @@ def parse_float(raw: str | None) -> float | None:
         return None
     kept = "".join(ch for ch in raw if ch.isdigit() or ch in ".,")
     return float(kept.replace(",", ".")) if kept else None
+
+def parse_date(raw: str | None, today: date | None = None) -> date | None:
+    """'2026-06-14' / '14.06.2026' / 'wczoraj' -> date; unknown -> None."""
+    if raw is None:
+        return None
+    today = today or date.today()
+    if raw.strip().lower() == "wczoraj":
+        return today - timedelta(days=1)
+    for pattern in DATE_FORMATS:
+        try:
+            return datetime.strptime(raw.strip(), pattern).date()
+        except ValueError:
+            pass  # this pattern doesn't fit, try the next one
+    return None
