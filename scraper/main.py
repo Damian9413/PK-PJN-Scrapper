@@ -1,5 +1,6 @@
 """Scraper entry point: crawl the catalogue, enrich, clean, export."""
 
+import json
 from pathlib import Path
 
 import requests
@@ -13,6 +14,7 @@ from scraper.fetcher import Fetcher
 
 START_URL = "http://localhost:8000/page-1.html"
 DATA_DIR = Path("data")
+RUN_SUMMARY_FILE = "run_summary.json"
 
 
 def crawl_catalog(fetcher: Fetcher, start_url: str) -> list[dict]:
@@ -75,6 +77,14 @@ def main() -> None:
     for filename, exporter in exporters.items():
         exporter.export(clean, DATA_DIR / filename)
         print(f"Saved {len(clean)} records to {DATA_DIR / filename}")
+
+    summary = {
+        "collected": len(records),
+        "duplicates_removed": len(records) - len(unique),
+        "unique": len(unique),
+    }
+    (DATA_DIR / RUN_SUMMARY_FILE).write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(f"Saved run summary to {DATA_DIR / RUN_SUMMARY_FILE}")
 
 
 if __name__ == "__main__":
