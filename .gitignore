@@ -7,9 +7,18 @@ __pycache__/
 
 # ustawienia edytora (osobiste, nie projektowe)
 .vscode/
+.idea/
+
+# cache narzędzi
+.pytest_cache/
+
+# sprawozdanie i notatki prywatne (nie w repozytorium)
+reports/sprawozdanie.*
+reports/odpowiedz_ustna.md
 
 # wyniki działania programu – da się je odtworzyć skryptem
 output/
+data/
 
 # pliki systemowe macOS
 .DS_Store
