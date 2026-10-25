@@ -10,6 +10,7 @@ __pycache__/
 
 # wyniki działania programu – da się je odtworzyć skryptem
 output/
+data/
 
 # pliki systemowe macOS
 .DS_Store
