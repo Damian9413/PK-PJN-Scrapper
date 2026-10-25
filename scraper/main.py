@@ -1,13 +1,18 @@
 """Scraper entry point: crawl the catalogue, enrich, clean, export."""
-import requests
 
-from scraper.extractors import CatalogPageExtractor, DetailPageExtractor
+from pathlib import Path
+
+import requests
 from bs4 import BeautifulSoup
 
-from scraper.fetcher import Fetcher
 from scraper.cleaners import clean_record
+from scraper.exporters import CsvExporter, JsonExporter
+from scraper.extractors import CatalogPageExtractor, DetailPageExtractor
+from scraper.fetcher import Fetcher
+
 
 START_URL = "http://localhost:8000/page-1.html"
+DATA_DIR = Path("data")
 
 
 def crawl_catalog(fetcher: Fetcher, start_url: str) -> list[dict]:
@@ -61,7 +66,15 @@ def main() -> None:
     print(f"Records with details: {len(full)}, fields in first record: {len(full[0])}")
 
     clean = [clean_record(record) for record in full]
-    print(clean[0])
+
+    DATA_DIR.mkdir(exist_ok=True)
+    exporters = {
+        "products.csv": CsvExporter(),
+        "products.json": JsonExporter(),
+    }
+    for filename, exporter in exporters.items():
+        exporter.export(clean, DATA_DIR / filename)
+        print(f"Saved {len(clean)} records to {DATA_DIR / filename}")
 
 
 if __name__ == "__main__":
